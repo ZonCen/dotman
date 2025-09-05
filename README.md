@@ -27,6 +27,9 @@ Optionally, move it into your `$PATH`:
 mv dotman ~/.local/bin/
 ```
 
+Note: You also need to create the dotfiles repository folder you want to use (example: /Users/yourname/dotfiles) and make sure it is initialized as a Git repository if you plan to use the sync command.
+
+
 ---
 
 ## ⚡ Usage
@@ -74,6 +77,12 @@ dotman remove ~/.zshrc
 
 ---
 
+### 5. Sync your repo (experimental)
+- Stages new/modified files
+- Commit them with the message `dotman sync`.
+- Pushes your configured Github repository
+- Pulls changes from remote (fast-forward only)
+
 ## 🔄 Full Example Workflow
 
 Here’s a typical session:
@@ -91,6 +100,10 @@ dotman add ~/.zshrc
 dotman list
 # .zshrc
 
+# Sync with GitHub
+dotman sync
+# dotman sync -> git commit + push
+
 # Remove the file and restore it
 dotman remove ~/.zshrc
 # Successfully removed file from path
@@ -98,13 +111,16 @@ dotman remove ~/.zshrc
 
 After this workflow:  
 - `~/.zshrc` has been restored to its original location.  
-- The repo file `~/dotfiles/.zshrc` is now gone (moved back).  
+- The repo file `~/dotfiles/.zshrc` is now gone (moved back).
+- Your repo can be synced with GitHub.
 
 ---
 
 ## 🛠 Roadmap
 - [x] Add support for initializing config automatically if missing.  
-- [ ] Add `sync` command to push/pull dotfiles via Git.  
+- [x] Add `sync` command to push/pull dotfiles via Git.
+- [ ] Improvements to `sync` command such as dry-run functionality 
+- [ ] Add possibility to automatically download your dotfiles folder and make it ready for `sync`
 - [ ] Add flags for overwrite/force when adding files.  
 - [ ] Add verbose mode (show actions instead of silent ops).  
 
