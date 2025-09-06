@@ -160,6 +160,7 @@ After this workflow:
 - [x] Add possibility to automatically download your dotfiles folder from github and make it ready for `sync`
 - [x] Add flags for overwrite/force when adding files.  
 - [x] Add verbose mode (show actions instead of silent ops).  
+- [ ] Add support for user to check status of files
 
 ---
 
