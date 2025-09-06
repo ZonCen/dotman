@@ -8,7 +8,8 @@ A simple, CLI-based **dotfiles manager** written in Go.
 ## ✨ Features (MVP)
 - **Add**: move a file into the dotfiles repo and replace it with a symlink.  
 - **List**: show all files currently tracked in the repo.  
-- **Remove**: restore a file from the repo by removing the symlink and moving the file back.  
+- **Remove**: restore a file from the repo by removing the symlink and moving the file back.
+- **Sync**: push and pulls files from repo to github repository.
 
 ---
 
@@ -78,10 +79,16 @@ dotman remove ~/.zshrc
 ---
 
 ### 5. Sync your repo (experimental)
+```bash
+dotman sync <options>
+```
 - Stages new/modified files
 - Commit them with the message `dotman sync`.
 - Pushes your configured Github repository
 - Pulls changes from remote (fast-forward only)
+- (optional) `--dry-run` to run a test of uploading to your repository (default set to false, if true will put `--upload` and `--download` to false)
+- (optional) `--upload` only upload modified/added files from your `repo_path` (default set to true)
+- (optional) `--download` only download from github repository to your `repo_path`(default set to true)
 
 ## 🔄 Full Example Workflow
 
@@ -102,7 +109,7 @@ dotman list
 
 # Sync with GitHub
 dotman sync
-# dotman sync -> git commit + push
+# dotman sync -> git commit + push + pull
 
 # Remove the file and restore it
 dotman remove ~/.zshrc
@@ -119,8 +126,9 @@ After this workflow:
 ## 🛠 Roadmap
 - [x] Add support for initializing config automatically if missing.  
 - [x] Add `sync` command to push/pull dotfiles via Git.
-- [ ] Improvements to `sync` command such as dry-run functionality 
-- [ ] Add possibility to automatically download your dotfiles folder and make it ready for `sync`
+- [x] Improvements to `sync` command such as dry-run functionality
+- [x] Adding flags to `sync` to control upload and/or download
+- [ ] Add possibility to automatically download your dotfiles folder from github and make it ready for `sync`
 - [ ] Add flags for overwrite/force when adding files.  
 - [ ] Add verbose mode (show actions instead of silent ops).  
 

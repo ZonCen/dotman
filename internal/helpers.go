@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -26,20 +25,10 @@ func ResolvePath(input string) (string, error) {
 	return filepath.Join(home, input), nil
 }
 
-func RepoExists(url string) bool {
-	cleanURL := strings.TrimSuffix(url, ".git")
-	resp, err := http.Head(cleanURL)
-	if err != nil {
-		return false
-	}
-
-	return resp.StatusCode == http.StatusOK || resp.StatusCode == http.StatusMovedPermanently
-}
-
 func Run(name string, args ...string) (int, error) {
 	cmd := exec.Command(name, args...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	cmd.Stdout = nil
+	cmd.Stderr = nil
 	err := cmd.Run()
 
 	if exitErr, ok := err.(*exec.ExitError); ok {
@@ -51,4 +40,13 @@ func Run(name string, args ...string) (int, error) {
 	}
 
 	return 0, nil
+}
+
+func RunOutput(name string, args ...string) (string, error) {
+	cmd := exec.Command(name, args...)
+	out, err := cmd.Output()
+	if exitErr, ok := err.(*exec.ExitError); ok {
+		return string(out), exitErr
+	}
+	return string(out), err
 }
