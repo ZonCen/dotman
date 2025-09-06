@@ -10,6 +10,7 @@ A simple, CLI-based **dotfiles manager** written in Go.
 - **List**: show all files currently tracked in the repo.  
 - **Remove**: restore a file from the repo by removing the symlink and moving the file back.
 - **Sync**: push and pulls files from repo to github repository.
+- **Init**: initialize config file and folder for dotman.
 
 ---
 
@@ -28,7 +29,11 @@ Optionally, move it into your `$PATH`:
 mv dotman ~/.local/bin/
 ```
 
-Note: You also need to create the dotfiles repository folder you want to use (example: /Users/yourname/dotfiles) and make sure it is initialized as a Git repository if you plan to use the sync command.
+Note: After installation you can run `dotman init --repository <url>` to fully initialize dotman to a working state
+
+```bash
+dotman init --repository <url>
+```
 
 
 ---
@@ -86,9 +91,29 @@ dotman sync <options>
 - Commit them with the message `dotman sync`.
 - Pushes your configured Github repository
 - Pulls changes from remote (fast-forward only)
+
+#### Options
+
 - (optional) `--dry-run` to run a test of uploading to your repository (default set to false, if true will put `--upload` and `--download` to false)
 - (optional) `--upload` only upload modified/added files from your `repo_path` (default set to true)
 - (optional) `--download` only download from github repository to your `repo_path`(default set to true)
+
+
+### 6. Initialize dotman on your machine
+```bash
+dotman init <options>
+```
+
+- Creates a configuration file in ~/ (as long as it does not already exists)
+- Creates a folder where you keep your config/dot files (default ~/dotfiles)
+- (optional) Adds git remote URL to folder and if requested initialize the folder
+
+#### Options
+
+- (optional) `--folderpath` Change folder you want to save your configuration files (default ~/dotfiles)
+- (optional) `--repository` Which repository you want to initialize towards
+- (optional) `--branch` Change which branch to use on git
+- (optional) `--force` Used to force update auth_type of your git remote (Change from http <> SSH)
 
 ## 🔄 Full Example Workflow
 
@@ -96,7 +121,7 @@ Here’s a typical session:
 
 ```bash
 # Check your config (should exist at ~/dotfiles/.dotconfig)
-cat ~/dotfiles/.dotconfig
+cat ~/dotfiles/.dotconfig or dotman init
 # repo_path: /Users/yourname/dotfiles
 
 # Add your zsh config
@@ -128,7 +153,7 @@ After this workflow:
 - [x] Add `sync` command to push/pull dotfiles via Git.
 - [x] Improvements to `sync` command such as dry-run functionality
 - [x] Adding flags to `sync` to control upload and/or download
-- [ ] Add possibility to automatically download your dotfiles folder from github and make it ready for `sync`
+- [x] Add possibility to automatically download your dotfiles folder from github and make it ready for `sync`
 - [ ] Add flags for overwrite/force when adding files.  
 - [ ] Add verbose mode (show actions instead of silent ops).  
 

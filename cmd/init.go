@@ -42,6 +42,4 @@ func init() {
 	initCmd.Flags().StringVar(&repository, "repository", "", "Which git repository you want to use. Used to run git init if needed")
 	initCmd.Flags().StringVar(&branch, "branch", "main", "Which branch to use")
 	initCmd.Flags().BoolVar(&force, "force", false, "If the init should change remote URL to new auth_type")
-
-	initCmd.MarkFlagRequired("repository")
 }

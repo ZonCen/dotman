@@ -10,7 +10,7 @@ import (
 func Init(folderPath, repository, branch string, force bool) error {
 
 	if !internal.FolderExist(folderPath) {
-		if internal.ConfirmWithUser("FolderPath does not exists, do you want us to create one? ") {
+		if internal.ConfirmWithUser("FolderPath does not exists, do you want to create one? ") {
 			err := internal.CreateFolder(folderPath)
 			if err != nil {
 				return fmt.Errorf("error creating folder %w", err)
@@ -21,13 +21,13 @@ func Init(folderPath, repository, branch string, force bool) error {
 	if repository != "" {
 		ok, _ := git.CheckIfRepo(folderPath)
 		if ok == 128 {
-			if internal.ConfirmWithUser("The folder has not been initialized to git, want to do it? ") {
+			if internal.ConfirmWithUser("The folder has not been initialized to git, do you want to initialize it? ") {
 				_, err := git.Init(folderPath)
 				if err != nil {
 					return fmt.Errorf("could not initialize repository: %w", err)
 				}
 				fmt.Println("Folder has been initialized")
-				if internal.ConfirmWithUser("Folder has no remote, want to add the remote repository? ") {
+				if internal.ConfirmWithUser("Folder has no remote, do you want to add the remote repository? ") {
 					_, err := git.AddRemote(folderPath, repository)
 					if err != nil {
 						return fmt.Errorf("could not add origin to the repository: %w", err)
@@ -75,8 +75,6 @@ func Init(folderPath, repository, branch string, force bool) error {
 				}
 			}
 		}
-	} else {
-		return fmt.Errorf("you have to provide a git remote link")
 	}
 
 	return nil
