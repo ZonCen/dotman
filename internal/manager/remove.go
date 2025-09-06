@@ -23,13 +23,13 @@ func RemoveFile(file string) error {
 		return fmt.Errorf("file is not a symlink")
 	}
 
-	repoPath, err := os.Readlink(absPath)
+	folderpath, err := os.Readlink(absPath)
 	if err != nil {
 		return fmt.Errorf("failed to read symlink: %w", err)
 	}
 
-	if !internal.FileExist(repoPath) {
-		return fmt.Errorf("symlink target %s does not exist", repoPath)
+	if !internal.FileExist(folderpath) {
+		return fmt.Errorf("symlink target %s does not exist", folderpath)
 	}
 
 	err = os.Remove(absPath)
@@ -37,7 +37,7 @@ func RemoveFile(file string) error {
 		return fmt.Errorf("could not remove the file: %w", err)
 	}
 
-	err = os.Rename(repoPath, absPath)
+	err = os.Rename(folderpath, absPath)
 	if err != nil {
 		return fmt.Errorf("could not move the file: %w", err)
 	}

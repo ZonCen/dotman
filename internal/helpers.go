@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -10,6 +11,81 @@ import (
 func FileExist(filePath string) bool {
 	_, err := os.Stat(filePath)
 	return err == nil || !os.IsNotExist(err)
+}
+
+func FolderExist(folderPath string) bool {
+	info, err := os.Stat(folderPath)
+	if os.IsNotExist(err) {
+		return false
+	}
+
+	return info.IsDir()
+}
+
+func CreateFolder(folderPath string) error {
+	err := os.MkdirAll(folderPath, 0755)
+	if err != nil {
+		return fmt.Errorf("failed to create repo directory: %w", err)
+	}
+	return nil
+}
+
+func ConfirmWithUser(msg string) bool {
+	var confirm string
+	for {
+		fmt.Print(msg)
+		fmt.Scanln(&confirm)
+		confirm = strings.ToLower(strings.TrimSpace(confirm))
+		if confirm == "y" || confirm == "n" {
+			break
+		}
+		fmt.Println("Please enter y or n")
+	}
+
+	if confirm == "y" {
+		return true
+	} else {
+		return false
+	}
+}
+
+func NormaliseRepoURL(url string) string {
+	if strings.HasPrefix(url, "git@") {
+		parts := strings.SplitN(url, ":", 2)
+		if len(parts) == 2 {
+			return "https://github.com/" + parts[1]
+		}
+	} else if strings.HasPrefix(url, "https:") {
+		parts := strings.SplitN(url, "https://github.com/", 2)
+		if len(parts) == 2 {
+			return "git@" + parts[1]
+		}
+	}
+
+	return url
+}
+
+func NormaliseRepoSuffix(url string) string {
+	if strings.HasSuffix(url, ".git") {
+		url = strings.TrimSuffix(url, ".git")
+	} else {
+		url = url + ".git"
+	}
+
+	return url
+}
+
+func SameSuffix(s1, s2 string) bool {
+	return strings.HasSuffix(s1, ".git") && strings.HasSuffix(s2, ".git")
+}
+
+func SamePrefix(s1, s2 string) bool {
+	i := 0
+	for i < len(s1) && i < len(s2) && s1[i] == s2[i] {
+		i++
+	}
+
+	return i > 0
 }
 
 func ResolvePath(input string) (string, error) {

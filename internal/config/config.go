@@ -8,7 +8,7 @@ import (
 )
 
 type Config struct {
-	RepoPath string `yaml:"repo_path"`
+	FolderPath string `yaml:"repo_path"`
 }
 
 func LoadConf(path string) (*Config, error) {

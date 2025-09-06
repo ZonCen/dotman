@@ -4,24 +4,25 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/ZonCen/dotman/internal"
 	"github.com/ZonCen/dotman/internal/git"
 )
 
-func SyncRepo(repoPath string, dryrun, download, upload bool) error {
+func SyncRepo(folderPath string, dryrun, download, upload bool) error {
 	fmt.Println("Checking for valid repository")
-	code, err := git.CheckIfRepo(repoPath)
+	code, err := git.CheckIfRepo(folderPath)
 	if err != nil || code != 0 {
-		return fmt.Errorf("not a git repository: %s", repoPath)
+		return fmt.Errorf("not a git repository: %s", folderPath)
 	}
 
-	fmt.Println("Repository detected at:", repoPath)
+	fmt.Println("Repository detected at:", folderPath)
 	if dryrun {
 		fmt.Println("[dry-run] Collecting local changes")
 	} else {
 		fmt.Println("Collecting local changes")
 	}
 
-	output, err := git.Status(repoPath)
+	output, err := git.Status(folderPath)
 	if err != nil {
 		return fmt.Errorf("failed to collect status: %w", err)
 	}
@@ -44,44 +45,37 @@ func SyncRepo(repoPath string, dryrun, download, upload bool) error {
 		fmt.Println("Following files will be commited and pushed:")
 		printChanges(output)
 
-		if _, err := git.Add(repoPath); err != nil {
+		if _, err := git.Add(folderPath); err != nil {
 			return fmt.Errorf("could not stage repo folder: %w", err)
 		}
 
-		code, _ = git.Diff(repoPath)
+		code, _ = git.Diff(folderPath)
 		if code == 1 {
-			if _, err := git.Commit(repoPath, "dotman sync"); err != nil {
+			if _, err := git.Commit(folderPath, "dotman sync"); err != nil {
 				return fmt.Errorf("could not commit changes: %w", err)
 			}
 		} else if code != 0 {
 			return fmt.Errorf("git diff failed with exit code %d", code)
 		}
 
-		if _, err := git.Push(repoPath); err != nil {
+		if _, err := git.Push(folderPath); err != nil {
 			return fmt.Errorf("could not push changes: %w", err)
 		}
 	}
 
 	if download {
-		output, err := git.Status(repoPath)
+		output, err := git.Status(folderPath)
 		if err != nil {
 			return fmt.Errorf("failed to collect status: %w", err)
 		}
 
 		if strings.TrimSpace(output) != "" {
-			var con string
-			for {
-				fmt.Print("[warning] Local changes detected, pull may fail or cause conflicts. Continue? (y/N) ")
-				fmt.Scanln(&con)
-				con = strings.ToLower(strings.TrimSpace(con))
-				if con == "y" || con == "n" || con == "" {
-					break
-				}
-				fmt.Println("Please enter y or n")
+			if !internal.ConfirmWithUser("[warning] Local changes detected, pull may fail or cause conflicts. Continue? (y/N)") {
+				return fmt.Errorf("aborting downloading changes from git")
 			}
 		}
 
-		if _, err := git.Pull(repoPath); err != nil {
+		if _, err := git.Pull(folderPath); err != nil {
 			return fmt.Errorf("could not pull changes: %w", err)
 		}
 	}

@@ -10,9 +10,9 @@ var listCmd = &cobra.Command{
 	Use:   "list handled files",
 	Short: "Will list all files in the configured repopath",
 	Run: func(cmd *cobra.Command, args []string) {
-		path := cfg.RepoPath
+		folderPath := cfg.FolderPath
 
-		manager.ListFiles(path)
+		manager.ListFiles(folderPath)
 	},
 }
 

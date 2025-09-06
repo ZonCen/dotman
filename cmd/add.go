@@ -16,13 +16,13 @@ var addCmd = &cobra.Command{
 		file := args[0]
 		filePath, _ := internal.ResolvePath(file)
 
-		repoPath := cfg.RepoPath
+		folderPath := cfg.FolderPath
 		if !internal.FileExist(filePath) {
 			fmt.Println("File does not exist")
 			return
 		}
 
-		err := manager.AddFile(filePath, repoPath)
+		err := manager.AddFile(filePath, folderPath)
 		if err != nil {
 			fmt.Printf("Error adding file: %v\n", err)
 			return

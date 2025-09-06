@@ -18,7 +18,7 @@ func initConfig() {
 
 	if !internal.FileExist(configPath) {
 		fmt.Println("No config found, creating default one...")
-		cfg = &config.Config{RepoPath: filepath.Join(home, "dotfiles")}
+		cfg = &config.Config{FolderPath: filepath.Join(home, "dotfiles")}
 		_ = config.SaveConf(configPath, cfg)
 	}
 

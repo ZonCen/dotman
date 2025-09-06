@@ -1,6 +1,7 @@
 package git
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/ZonCen/dotman/internal"
@@ -30,6 +31,31 @@ func ListChanges(input string) []string {
 	return sliceLines
 }
 
+func ChangeRemote(folderPath, desiredURL string) (int, error) {
+	return internal.Run("git", "-C", folderPath, "remote", "set-url", "origin", desiredURL)
+}
+
+func AddRemote(folderPath, url string) (int, error) {
+	return internal.Run("git", "-C", folderPath, "remote", "add", "origin", url)
+}
+
+func FetchOrigin(folderPath string) (int, error) {
+	return internal.Run("git", "-C", folderPath, "fetch", "origin")
+}
+
+func FirstCheckout(folderpath, branch string) (int, error) {
+	return internal.Run("git", "-C", folderpath, "checkout", "-b", branch, "--track", "origin/"+branch)
+}
+
+func GetRemoteURL(repoPath string) (string, error) {
+	out, err := internal.RunOutput("git", "-C", repoPath, "remote", "get-url", "origin")
+	if err != nil {
+		return "", fmt.Errorf("failed to get remote URL %w", err)
+	}
+
+	return strings.TrimSpace(out), nil
+}
+
 func Add(repoPath string) (int, error) {
 	return internal.Run("git", "-C", repoPath, "add", "-A")
 }
@@ -44,4 +70,8 @@ func Push(repoPath string) (int, error) {
 
 func Pull(repoPath string) (int, error) {
 	return internal.Run("git", "-C", repoPath, "pull", "--ff-only")
+}
+
+func Init(repoPath string) (int, error) {
+	return internal.Run("git", "-C", repoPath, "init")
 }

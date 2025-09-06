@@ -18,7 +18,7 @@ var syncCmd = &cobra.Command{
 	Use:   "sync",
 	Short: "Sync with your github repo",
 	Run: func(cmd *cobra.Command, args []string) {
-		repoPath := cfg.RepoPath
+		folderPath := cfg.FolderPath
 		// Dry-run
 		if dryRun {
 			fmt.Println("Will run in dry-run mode")
@@ -34,7 +34,7 @@ var syncCmd = &cobra.Command{
 			fmt.Println("Will only upload files")
 		}
 
-		err := manager.SyncRepo(repoPath, dryRun, download, upload)
+		err := manager.SyncRepo(folderPath, dryRun, download, upload)
 		if err != nil {
 			fmt.Printf("Error syncing with github: %v\n", err)
 			return
