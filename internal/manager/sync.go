@@ -9,17 +9,17 @@ import (
 )
 
 func SyncRepo(folderPath string, dryrun, download, upload bool) error {
-	fmt.Println("Checking for valid repository")
+	internal.LogVerbose("Checking for valid repository")
 	code, err := git.CheckIfRepo(folderPath)
 	if err != nil || code != 0 {
 		return fmt.Errorf("not a git repository: %s", folderPath)
 	}
 
-	fmt.Println("Repository detected at:", folderPath)
+	internal.LogVerbose("Repository detected at %v", folderPath)
 	if dryrun {
-		fmt.Println("[dry-run] Collecting local changes")
+		internal.LogVerbose("[dry-run] Collecting local changes")
 	} else {
-		fmt.Println("Collecting local changes")
+		internal.LogVerbose("Collecting local changes")
 	}
 
 	output, err := git.Status(folderPath)
@@ -28,21 +28,23 @@ func SyncRepo(folderPath string, dryrun, download, upload bool) error {
 	}
 	if strings.TrimSpace(output) == "" {
 		if dryrun {
-			return fmt.Errorf("[dry-run] no changes detected")
+			internal.LogVerbose("[dry-run] no changes detected")
+			return nil
 		} else {
-			return fmt.Errorf("no changes detected")
+			internal.LogVerbose("No changes detected")
+			return nil
 		}
 	}
 
 	if dryrun {
-		fmt.Println("[dry-run] Changes detected, following files would be staged and commited with commit message 'dotman sync':")
+		internal.LogVerbose("[dry-run] Changes detected, following files would be staged and commited with commit message 'dotman sync':")
 		printChanges(output)
 
 		return nil
 	}
 
 	if upload {
-		fmt.Println("Following files will be commited and pushed:")
+		internal.LogVerbose("Following files will be commited and pushed:")
 		printChanges(output)
 
 		if _, err := git.Add(folderPath); err != nil {
@@ -85,6 +87,6 @@ func SyncRepo(folderPath string, dryrun, download, upload bool) error {
 
 func printChanges(output string) {
 	for _, change := range git.ListChanges(output) {
-		fmt.Println(change)
+		internal.LogVerbose(change)
 	}
 }

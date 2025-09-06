@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/ZonCen/dotman/internal"
 	"github.com/ZonCen/dotman/internal/manager"
 	"github.com/spf13/cobra"
 )
@@ -21,17 +22,18 @@ var syncCmd = &cobra.Command{
 		folderPath := cfg.FolderPath
 		// Dry-run
 		if dryRun {
-			fmt.Println("Will run in dry-run mode")
+			internal.LogVerbose("Will run in dry-run mode")
+			internal.Verbose = true
 			download = false
 			upload = false
 		}
 		// Download
 		if download && !upload {
-			fmt.Println("Will only download files")
+			internal.LogVerbose("Will only download files")
 		}
 		// Upload
 		if upload && !download {
-			fmt.Println("Will only upload files")
+			internal.LogVerbose("Will only upload files")
 		}
 
 		err := manager.SyncRepo(folderPath, dryRun, download, upload)

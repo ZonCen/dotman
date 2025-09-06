@@ -20,12 +20,14 @@ var initCmd = &cobra.Command{
 	Use:   "init",
 	Short: "Initialise your dotman configuration and folder",
 	Run: func(cmd *cobra.Command, args []string) {
+		internal.LogVerbose("Trying to resolve path %v", folderPath)
 		folderPath, err := internal.ResolvePath(folderPath)
 		if err != nil {
 			fmt.Printf("Could not read the folderPath")
 			return
 		}
 
+		internal.LogVerbose("Starting the initialization")
 		err = manager.Init(folderPath, repository, branch, force)
 		if err != nil {
 			fmt.Printf("Error initialize repository: %v\n", err)

@@ -57,6 +57,24 @@ This tells `dotman` where to store your dotfiles.
 
 ---
 
+### 1.b Initialize config automatically
+```bash
+dotman init <options>
+```
+
+- Creates a configuration file in ~/ (as long as it does not already exists)
+- Creates a folder where you keep your config/dot files (default ~/dotfiles)
+- (optional) Adds git remote URL to folder and if requested initialize the folder
+
+#### Options
+
+- (optional) `--folderpath` Change folder you want to save your configuration files (default ~/dotfiles)
+- (optional) `--repository` Which repository you want to initialize towards
+- (optional) `--branch` Change which branch to use on git
+- (optional) `--force` Used to force update auth_type of your git remote (Change from http <> SSH)
+
+---
+
 ### 2. Add a File
 ```bash
 dotman add ~/.zshrc
@@ -98,22 +116,8 @@ dotman sync <options>
 - (optional) `--upload` only upload modified/added files from your `repo_path` (default set to true)
 - (optional) `--download` only download from github repository to your `repo_path`(default set to true)
 
+---
 
-### 6. Initialize dotman on your machine
-```bash
-dotman init <options>
-```
-
-- Creates a configuration file in ~/ (as long as it does not already exists)
-- Creates a folder where you keep your config/dot files (default ~/dotfiles)
-- (optional) Adds git remote URL to folder and if requested initialize the folder
-
-#### Options
-
-- (optional) `--folderpath` Change folder you want to save your configuration files (default ~/dotfiles)
-- (optional) `--repository` Which repository you want to initialize towards
-- (optional) `--branch` Change which branch to use on git
-- (optional) `--force` Used to force update auth_type of your git remote (Change from http <> SSH)
 
 ## 🔄 Full Example Workflow
 
@@ -154,8 +158,8 @@ After this workflow:
 - [x] Improvements to `sync` command such as dry-run functionality
 - [x] Adding flags to `sync` to control upload and/or download
 - [x] Add possibility to automatically download your dotfiles folder from github and make it ready for `sync`
-- [ ] Add flags for overwrite/force when adding files.  
-- [ ] Add verbose mode (show actions instead of silent ops).  
+- [x] Add flags for overwrite/force when adding files.  
+- [x] Add verbose mode (show actions instead of silent ops).  
 
 ---
 

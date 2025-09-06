@@ -15,6 +15,7 @@ var removeCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		file := args[0]
 
+		internal.LogVerbose("Trying to resolve path %v", folderPath)
 		filePath, _ := internal.ResolvePath(file)
 
 		err := manager.RemoveFile(filePath)

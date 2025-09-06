@@ -17,12 +17,8 @@ var addCmd = &cobra.Command{
 		filePath, _ := internal.ResolvePath(file)
 
 		folderPath := cfg.FolderPath
-		if !internal.FileExist(filePath) {
-			fmt.Println("File does not exist")
-			return
-		}
 
-		err := manager.AddFile(filePath, folderPath)
+		err := manager.AddFile(filePath, folderPath, force)
 		if err != nil {
 			fmt.Printf("Error adding file: %v\n", err)
 			return
@@ -34,4 +30,6 @@ var addCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(addCmd)
+
+	addCmd.Flags().BoolVar(&force, "force", false, "Use to override files that already exists in the folder.")
 }

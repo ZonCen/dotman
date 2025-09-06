@@ -8,6 +8,10 @@ import (
 	"strings"
 )
 
+var (
+	Verbose bool
+)
+
 func FileExist(filePath string) bool {
 	_, err := os.Stat(filePath)
 	return err == nil || !os.IsNotExist(err)
@@ -58,7 +62,7 @@ func NormaliseRepoURL(url string) string {
 	} else if strings.HasPrefix(url, "https:") {
 		parts := strings.SplitN(url, "https://github.com/", 2)
 		if len(parts) == 2 {
-			return "git@" + parts[1]
+			return "git@github.com:" + parts[1]
 		}
 	}
 
@@ -99,6 +103,21 @@ func ResolvePath(input string) (string, error) {
 
 	home, _ := os.UserHomeDir()
 	return filepath.Join(home, input), nil
+}
+
+func IsSymlink(absPath string) (bool, error) {
+	info, err := os.Lstat(absPath)
+	if err != nil {
+		return false, fmt.Errorf("file does not exist: %w", err)
+	}
+
+	return info.Mode()&os.ModeSymlink != 0, nil
+}
+
+func LogVerbose(msg string, args ...interface{}) {
+	if Verbose {
+		fmt.Printf(msg+"\n", args...)
+	}
 }
 
 func Run(name string, args ...string) (int, error) {

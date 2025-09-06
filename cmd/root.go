@@ -10,22 +10,25 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var cfg *config.Config
+var (
+	cfg *config.Config
+)
 
 func initConfig() {
 	home, _ := os.UserHomeDir()
 	configPath := filepath.Join(home, ".dotconfig")
 
 	if !internal.FileExist(configPath) {
-		fmt.Println("No config found, creating default one...")
-		cfg = &config.Config{FolderPath: filepath.Join(home, "dotfiles")}
-		_ = config.SaveConf(configPath, cfg)
+		if internal.ConfirmWithUser("No config found, do you want to create one? (y/N)") {
+			cfg = &config.Config{FolderPath: filepath.Join(home, "dotfiles")}
+			_ = config.SaveConf(configPath, cfg)
+		}
 	}
 
 	var err error
 	cfg, err = config.LoadConf(configPath)
 	if err != nil {
-		fmt.Println("Failed to load config")
+		fmt.Println("Failed to load config:", err)
 		os.Exit(1)
 	}
 }
@@ -49,4 +52,6 @@ func Execute() {
 
 func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	rootCmd.PersistentFlags().BoolVarP(&internal.Verbose, "verbose", "v", false, "Show detailed output")
 }
