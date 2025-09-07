@@ -11,6 +11,7 @@ A simple, CLI-based **dotfiles manager** written in Go.
 - **Remove**: restore a file from the repo by removing the symlink and moving the file back.
 - **Sync**: push and pulls files from repo to github repository.
 - **Init**: initialize config file and folder for dotman.
+- **Status**: Check status for all your tracked files such as if symlink still exists and points correctly.
 
 ---
 
@@ -51,9 +52,10 @@ Example `.dotconfig`:
 
 ```yaml
 repo_path: /Users/yourname/dotfiles
+info_path: /Users/yourname/dotfiles/info.json
 ```
 
-This tells `dotman` where to store your dotfiles.  
+This tells `dotman` where to store your dotfiles and where it can locate the info file.
 
 ---
 
@@ -62,7 +64,7 @@ This tells `dotman` where to store your dotfiles.
 dotman init <options>
 ```
 
-- Creates a configuration file in ~/ (as long as it does not already exists)
+- Creates a configuration file in ~/ (as long as it does not already exists) and adds default repo_path and info_path
 - Creates a folder where you keep your config/dot files (default ~/dotfiles)
 - (optional) Adds git remote URL to folder and if requested initialize the folder
 
@@ -99,9 +101,22 @@ dotman remove ~/.zshrc
 - Removes the symlink `~/.zshrc`.  
 - Moves `~/dotfiles/.zshrc` back to `~/.zshrc`.  
 
+#### options
+- (optional) `--force` removes the file from your track file even if link is broken.
+
 ---
 
-### 5. Sync your repo (experimental)
+### 5. Check status on your tracked files
+```yaml
+dotman status
+```
+- Checks so the symlink file exists
+- Checks so the file exists in your tracked folder
+- Provides information if any files are broken.
+
+---
+
+### 6. Sync your repo
 ```bash
 dotman sync <options>
 ```
@@ -160,7 +175,8 @@ After this workflow:
 - [x] Add possibility to automatically download your dotfiles folder from github and make it ready for `sync`
 - [x] Add flags for overwrite/force when adding files.  
 - [x] Add verbose mode (show actions instead of silent ops).  
-- [ ] Add support for user to check status of files
+- [x] Add support for user to check status of files
+- [ ] Improve on check status command
 
 ---
 

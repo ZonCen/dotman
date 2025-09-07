@@ -20,7 +20,7 @@ func initConfig() {
 
 	if !internal.FileExist(configPath) {
 		if internal.ConfirmWithUser("No config found, do you want to create one? (y/N)") {
-			cfg = &config.Config{FolderPath: filepath.Join(home, "dotfiles")}
+			cfg = &config.Config{FolderPath: filepath.Join(home, "dotfiles"), InfoPath: filepath.Join(home, "dotfiles", "info.json")}
 			_ = config.SaveConf(configPath, cfg)
 		}
 	}

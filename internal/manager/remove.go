@@ -6,53 +6,66 @@ import (
 	"path/filepath"
 
 	"github.com/ZonCen/dotman/internal"
+	"github.com/ZonCen/dotman/internal/files"
 )
 
-func RemoveFile(file string) error {
-	internal.LogVerbose("Confirming if path %v is absolute", file)
-	absPath, err := filepath.Abs(file)
+func RemoveFile(fileName, infoPath string, force bool) error {
+	var (
+		symPath  string
+		filePath string
+	)
+
+	fileInfo, err := files.ReadFile(infoPath)
 	if err != nil {
-		return fmt.Errorf("could not resolve path %s: %w", file, err)
-	}
-	internal.LogVerbose("Absolute path %v is correct", absPath)
-
-	internal.LogVerbose("Checking if file %v is symlinked", absPath)
-	isSym, err := internal.IsSymlink(absPath)
-	if err != nil {
-		return fmt.Errorf("%w", err)
+		return fmt.Errorf("could not read file: %w", err)
 	}
 
-	if !isSym {
-		return fmt.Errorf("file is not a symlink")
-	}
-	internal.LogVerbose("File is symlinked")
+	symPath = fileInfo[fileName].Symlink
+	filePath = fileInfo[fileName].Path
 
-	internal.LogVerbose("Following symlink file %v to destination folder", absPath)
-	folderpath, err := os.Readlink(absPath)
-	if err != nil {
-		return fmt.Errorf("failed to read symlink: %w", err)
+	_, err = checkSymlink(symPath)
+	if err != nil && !force {
+		return fmt.Errorf("file is not symlinked: %w", err)
 	}
-	internal.LogVerbose("Found destination at %v", folderpath)
 
-	internal.LogVerbose("Checking if %v exists", folderpath)
-	if !internal.FileExist(folderpath) {
-		return fmt.Errorf("symlink target %s does not exist", folderpath)
+	_, err = checkPath(filePath)
+	if err != nil && !force {
+		return fmt.Errorf("could not process filepath: %w", err)
 	}
-	internal.LogVerbose("File exists")
 
-	internal.LogVerbose("Removing file %v", absPath)
-	err = os.Remove(absPath)
-	if err != nil {
+	_, err = checkSamePath(symPath, filePath)
+	if err != nil && !force {
+		return fmt.Errorf("issues comparing paths: %w", err)
+	}
+
+	internal.LogVerbose("Removing file %v", symPath)
+	err = os.Remove(symPath)
+	if err != nil && !force {
 		return fmt.Errorf("could not remove the file: %w", err)
 	}
-	internal.LogVerbose("File has been removed")
 
-	internal.LogVerbose("Moving back %v to original path %v", absPath, file)
-	err = os.Rename(folderpath, absPath)
-	if err != nil {
+	internal.LogVerbose("Moving back %v to original path %v", filePath, symPath)
+	err = os.Rename(filePath, symPath)
+	if err != nil && !force {
 		return fmt.Errorf("could not move the file: %w", err)
 	}
-	internal.LogVerbose("Moved")
+
+	err = removeFromFile(filePath)
+	if err != nil {
+		return fmt.Errorf("could not remove from file: %w", err)
+	}
+
+	return nil
+}
+
+func removeFromFile(path string) error {
+	filename := filepath.Base(path)
+	dir := filepath.Dir(path)
+	path = filepath.Join(dir, "info.json")
+	err := files.RemoveFiles(path, filename)
+	if err != nil {
+		return fmt.Errorf("failed to remove from file: %w", err)
+	}
 
 	return nil
 }

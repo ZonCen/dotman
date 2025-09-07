@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/ZonCen/dotman/internal"
+	"github.com/ZonCen/dotman/internal/files"
 )
 
 // AddFile moves a file into the repository and creates a symlink back
@@ -49,6 +50,11 @@ func AddFile(filePath, folderPath string, force bool) error {
 		return fmt.Errorf("%w", err)
 	}
 
+	err = saveToFile(folderPath, filePath, destPath, fileName)
+	if err != nil {
+		return fmt.Errorf("%w", err)
+	}
+
 	return nil
 }
 
@@ -62,6 +68,17 @@ func moveAndLink(filePath, destPath string) error {
 	err = os.Symlink(destPath, filePath)
 	if err != nil {
 		return fmt.Errorf("failed to create symlink: %w", err)
+	}
+	return nil
+}
+
+func saveToFile(path, symPath, filePath, filename string) error {
+	infoFile := map[string]files.FileInfo{}
+	info := files.FileInfo{Symlink: internal.ShrinkPath(symPath), Path: internal.ShrinkPath(filePath), Status: "ok", Errors: nil}
+	infoFile[filename] = info
+	err := files.AddFiles(filepath.Join(path, "info.json"), infoFile)
+	if err != nil {
+		return fmt.Errorf("%w", err)
 	}
 	return nil
 }

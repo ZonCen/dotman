@@ -2,9 +2,9 @@ package manager
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/ZonCen/dotman/internal"
+	"github.com/ZonCen/dotman/internal/files"
 )
 
 func ListFiles(folderpath string) {
@@ -13,18 +13,15 @@ func ListFiles(folderpath string) {
 		fmt.Printf("could not find repofolder")
 		return
 	}
-	internal.LogVerbose("Found %v", folderpath)
 
-	internal.LogVerbose("Collecting files in %v", folderpath)
-	entries, err := os.ReadDir(folderpath)
+	internal.LogVerbose("Collecting information from in %v", folderpath+"/info.json")
+	entries, err := files.ReadFile(folderpath + "/info.json")
 	if err != nil {
-		fmt.Printf("could not read repofolder: %v\n", err)
+		fmt.Printf("could not read info.json: %v\n", err)
 		return
 	}
 	internal.LogVerbose("Presenting files in %v", folderpath)
-	for _, entry := range entries {
-		if !entry.IsDir() {
-			fmt.Println(entry.Name())
-		}
+	for filename := range entries {
+		fmt.Println(filename)
 	}
 }

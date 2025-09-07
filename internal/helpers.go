@@ -105,6 +105,19 @@ func ResolvePath(input string) (string, error) {
 	return filepath.Join(home, input), nil
 }
 
+func ShrinkPath(path string) string {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return path
+	}
+
+	if strings.HasPrefix(path, home) {
+		return strings.Replace(path, home, "~", 1)
+	}
+
+	return path
+}
+
 func IsSymlink(absPath string) (bool, error) {
 	info, err := os.Lstat(absPath)
 	if err != nil {
@@ -112,6 +125,15 @@ func IsSymlink(absPath string) (bool, error) {
 	}
 
 	return info.Mode()&os.ModeSymlink != 0, nil
+}
+
+func FollowSymlink(symPath string) (string, error) {
+	folderpath, err := os.Readlink(symPath)
+	if err != nil {
+		return "", fmt.Errorf("failed to read symlink: %w", err)
+	}
+
+	return folderpath, nil
 }
 
 func LogVerbose(msg string, args ...interface{}) {
