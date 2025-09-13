@@ -3,9 +3,10 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/ZonCen/dotman/internal"
 	"github.com/ZonCen/dotman/internal/manager"
-	"github.com/spf13/cobra"
 )
 
 var (
@@ -48,7 +49,16 @@ var syncCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(syncCmd)
 
-	syncCmd.Flags().BoolVar(&dryRun, "dry-run", false, "Run sync without making changes")
-	syncCmd.Flags().BoolVar(&download, "download", true, "Download remote changes only")
-	syncCmd.Flags().BoolVar(&upload, "upload", true, "Uploads local changes only")
+	syncCmd.Flags().BoolVar(&dryRun,
+		"dry-run",
+		false,
+		"Run sync without making changes")
+	syncCmd.Flags().BoolVar(&download,
+		"download",
+		true,
+		"Download remote changes only")
+	syncCmd.Flags().BoolVar(&upload,
+		"upload",
+		true,
+		"Uploads local changes only")
 }

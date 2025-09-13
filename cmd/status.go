@@ -3,9 +3,10 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/ZonCen/dotman/internal"
 	"github.com/ZonCen/dotman/internal/manager"
-	"github.com/spf13/cobra"
 )
 
 // statusCmd represents the status command

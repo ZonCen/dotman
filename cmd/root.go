@@ -5,9 +5,10 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/spf13/cobra"
+
 	"github.com/ZonCen/dotman/internal"
 	"github.com/ZonCen/dotman/internal/config"
-	"github.com/spf13/cobra"
 )
 
 var (

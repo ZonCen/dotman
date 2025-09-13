@@ -3,9 +3,10 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/ZonCen/dotman/internal"
 	"github.com/ZonCen/dotman/internal/manager"
-	"github.com/spf13/cobra"
 )
 
 var (
@@ -18,7 +19,7 @@ var (
 // initCmd represents the init command
 var initCmd = &cobra.Command{
 	Use:   "init",
-	Short: "Initialise your dotman configuration and folder",
+	Short: "Initialize your dotman configuration and folder",
 	Run: func(cmd *cobra.Command, args []string) {
 		internal.LogVerbose("Trying to resolve path %v", folderPath)
 		folderPath, err := internal.ResolvePath(folderPath)
@@ -40,8 +41,20 @@ var initCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(initCmd)
 
-	initCmd.Flags().StringVar(&folderPath, "folderpath", "~/dotfiles", "Folder where your dot files will be saved")
-	initCmd.Flags().StringVar(&repository, "repository", "", "Which git repository you want to use. Used to run git init if needed")
-	initCmd.Flags().StringVar(&branch, "branch", "main", "Which branch to use")
-	initCmd.Flags().BoolVar(&force, "force", false, "If the init should change remote URL to new auth_type")
+	initCmd.Flags().StringVar(&folderPath,
+		"folderpath",
+		"~/dotfiles",
+		"Folder where your dot files will be saved")
+	initCmd.Flags().StringVar(&repository,
+		"repository",
+		"",
+		"Which git repository you want to use. Used to run git init if needed")
+	initCmd.Flags().StringVar(&branch,
+		"branch",
+		"main",
+		"Which branch to use")
+	initCmd.Flags().BoolVar(&force,
+		"force",
+		false,
+		"If the init should change remote URL to new auth_type")
 }

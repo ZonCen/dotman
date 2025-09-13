@@ -34,11 +34,23 @@ func CreateFolder(folderPath string) error {
 	return nil
 }
 
+func CreateSymlink(symPath, filePath string) error {
+	err := os.Symlink(filePath, symPath)
+	if err != nil {
+		return fmt.Errorf("failed to create symlink: %w", err)
+	}
+	return nil
+}
 func ConfirmWithUser(msg string) bool {
 	var confirm string
 	for {
 		fmt.Print(msg)
-		fmt.Scanln(&confirm)
+		_, err := fmt.Scanln(&confirm)
+		if err != nil {
+			// If there's an error reading input, default to "no"
+			fmt.Println("Error reading input, defaulting to 'no'")
+			return false
+		}
 		confirm = strings.ToLower(strings.TrimSpace(confirm))
 		if confirm == "y" || confirm == "n" {
 			break

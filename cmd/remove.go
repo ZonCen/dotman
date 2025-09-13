@@ -3,8 +3,9 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/ZonCen/dotman/internal/manager"
 	"github.com/spf13/cobra"
+
+	"github.com/ZonCen/dotman/internal/manager"
 )
 
 var removeCmd = &cobra.Command{
@@ -28,5 +29,8 @@ var removeCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(removeCmd)
 
-	removeCmd.Flags().BoolVar(&force, "force", false, "Use to delete entry from info.json")
+	removeCmd.Flags().BoolVar(&force,
+		"force",
+		false,
+		"Use to delete entry from info.json")
 }

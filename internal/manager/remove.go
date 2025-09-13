@@ -3,7 +3,6 @@ package manager
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 
 	"github.com/ZonCen/dotman/internal"
 	"github.com/ZonCen/dotman/internal/files"
@@ -50,7 +49,7 @@ func RemoveFile(fileName, infoPath string, force bool) error {
 		return fmt.Errorf("could not move the file: %w", err)
 	}
 
-	err = removeFromFile(filePath)
+	err = removeFromFile(infoPath, fileName)
 	if err != nil {
 		return fmt.Errorf("could not remove from file: %w", err)
 	}
@@ -58,11 +57,8 @@ func RemoveFile(fileName, infoPath string, force bool) error {
 	return nil
 }
 
-func removeFromFile(path string) error {
-	filename := filepath.Base(path)
-	dir := filepath.Dir(path)
-	path = filepath.Join(dir, "info.json")
-	err := files.RemoveFiles(path, filename)
+func removeFromFile(infoPath, filename string) error {
+	err := files.RemoveFiles(infoPath, filename)
 	if err != nil {
 		return fmt.Errorf("failed to remove from file: %w", err)
 	}

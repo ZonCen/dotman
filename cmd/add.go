@@ -3,9 +3,10 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/ZonCen/dotman/internal"
 	"github.com/ZonCen/dotman/internal/manager"
-	"github.com/spf13/cobra"
 )
 
 var addCmd = &cobra.Command{
@@ -31,5 +32,8 @@ var addCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(addCmd)
 
-	addCmd.Flags().BoolVar(&force, "force", false, "Use to override files that already exists in the folder.")
+	addCmd.Flags().BoolVar(&force,
+		"force",
+		false,
+		"Use to override files that already exists in the folder.")
 }

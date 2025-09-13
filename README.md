@@ -1,5 +1,13 @@
 # dotman
 
+[![CI/CD Pipeline](https://github.com/ZonCen/dotman/workflows/CI/CD%20Pipeline/badge.svg)](https://github.com/ZonCen/dotman/actions)
+[![CodeQL](https://github.com/ZonCen/dotman/workflows/CodeQL/badge.svg)](https://github.com/ZonCen/dotman/actions)
+[![Go Report Card](https://goreportcard.com/badge/github.com/ZonCen/dotman)](https://goreportcard.com/report/github.com/ZonCen/dotman)
+[![codecov](https://codecov.io/gh/ZonCen/dotman/branch/main/graph/badge.svg)](https://codecov.io/gh/ZonCen/dotman)
+[![Go Version](https://img.shields.io/badge/Go-1.23+-00ADD8?style=flat&logo=go)](https://golang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Release](https://img.shields.io/github/v/release/ZonCen/dotman)](https://github.com/ZonCen/dotman/releases)
+
 A simple, CLI-based **dotfiles manager** written in Go.  
 `dotman` helps you keep your configuration files (dotfiles) organized in a central repository, while automatically creating symlinks so your system keeps working as expected.  
 

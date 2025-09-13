@@ -37,14 +37,15 @@ func SyncRepo(folderPath string, dryrun, download, upload bool) error {
 	}
 
 	if dryrun {
-		internal.LogVerbose("[dry-run] Changes detected, following files would be staged and commited with commit message 'dotman sync':")
+		internal.LogVerbose("[dry-run] Changes detected, following files would be staged " +
+			"and committed with commit message 'dotman sync':")
 		printChanges(output)
 
 		return nil
 	}
 
 	if upload {
-		internal.LogVerbose("Following files will be commited and pushed:")
+		internal.LogVerbose("Following files will be committed and pushed:")
 		printChanges(output)
 
 		if _, err := git.Add(folderPath); err != nil {

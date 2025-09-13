@@ -74,7 +74,12 @@ func moveAndLink(filePath, destPath string) error {
 
 func saveToFile(path, symPath, filePath, filename string) error {
 	infoFile := map[string]files.FileInfo{}
-	info := files.FileInfo{Symlink: internal.ShrinkPath(symPath), Path: internal.ShrinkPath(filePath), Status: "ok", Errors: nil}
+	info := files.FileInfo{
+		Symlink: internal.ShrinkPath(symPath),
+		Path:    internal.ShrinkPath(filePath),
+		Status:  "ok",
+		Errors:  nil,
+	}
 	infoFile[filename] = info
 	err := files.AddFiles(filepath.Join(path, "info.json"), infoFile)
 	if err != nil {

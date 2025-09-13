@@ -2,8 +2,10 @@ package manager
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"github.com/ZonCen/dotman/internal"
+	"github.com/ZonCen/dotman/internal/files"
 	"github.com/ZonCen/dotman/internal/git"
 )
 
@@ -42,13 +44,11 @@ func Init(folderPath, repository, branch string, force bool) error {
 				_, err := git.FetchOrigin(folderPath)
 				if err != nil {
 					return fmt.Errorf("could not fetch Origin: %w", err)
-
 				}
 				internal.LogVerbose("Running git checkout -b %v --track origin/%v", branch, branch)
 				_, err = git.FirstCheckout(folderPath, branch)
 				if err != nil {
 					return fmt.Errorf("could not checkout: %w", err)
-
 				}
 				internal.LogVerbose("Running git pull --ff-only")
 				_, err = git.Pull(folderPath)
@@ -80,7 +80,6 @@ func Init(folderPath, repository, branch string, force bool) error {
 						_, err := git.ChangeRemote(folderPath, repository)
 						if err != nil {
 							return fmt.Errorf("error changing remote: %w", err)
-
 						}
 					}
 				}
@@ -90,6 +89,16 @@ func Init(folderPath, repository, branch string, force bool) error {
 				return fmt.Errorf("unknown error when checking Repository")
 			}
 		}
+		if internal.ConfirmWithUser("Do you want to add the symlinks to the correct paths? ") {
+			internal.LogVerbose("Adding symlinks to the correct paths")
+			err := addSymlinks(folderPath)
+			if err != nil {
+				return fmt.Errorf("could not add symlinks: %w", err)
+			}
+			internal.LogVerbose("Symlinks has been added")
+		}
+	} else {
+		return fmt.Errorf("repository is empty")
 	}
 
 	return nil
@@ -114,4 +123,26 @@ func checkRemote(folderPath, repository string) (string, error) {
 	}
 	internal.LogVerbose("Remotes has been found")
 	return urls, nil
+}
+
+func addSymlinks(folderPath string) error {
+	errors := make(map[string]string)
+	files, err := files.ReadFile(filepath.Join(folderPath, "info.json"))
+	if err != nil {
+		return fmt.Errorf("could not read files: %w", err)
+	}
+	for _, file := range files {
+		if internal.FileExist(file.Path) {
+			err := internal.CreateSymlink(file.Symlink, file.Path)
+			if err != nil {
+				errors[file.Symlink] = err.Error()
+			}
+		} else {
+			return fmt.Errorf("file %v does not exist", file.Path)
+		}
+	}
+	if len(errors) > 0 {
+		return fmt.Errorf("could not create symlinks: %v", errors)
+	}
+	return nil
 }
