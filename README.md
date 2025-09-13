@@ -184,7 +184,7 @@ After this workflow:
 - [x] Add flags for overwrite/force when adding files.  
 - [x] Add verbose mode (show actions instead of silent ops).  
 - [x] Add support for user to check status of files
-- [ ] Improve on check status command
+- [x] Improve on check status command
 
 ---
 
